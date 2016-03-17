@@ -15,7 +15,8 @@ from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 import imdb
 
 datasets = {'imdb': (imdb.load_data, imdb.prepare_data)}
-p
+print datasets
+
 # Set the random number generators' seeds for consistency
 SEED = 123
 numpy.random.seed(SEED)
