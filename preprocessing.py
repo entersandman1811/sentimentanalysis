@@ -9,10 +9,12 @@ https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/tokenizer
 3) Then run this script.
 """
 
-dataset_path='/home/souradeep/Downloads/aclImdb'
+dataset_path='/home/souradeep/Downloads/aclImdb/'
 
 import numpy
 import cPickle as pkl
+
+from collections import OrderedDict
 
 import glob
 import os
