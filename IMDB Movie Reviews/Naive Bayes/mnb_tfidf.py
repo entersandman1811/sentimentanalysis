@@ -6,7 +6,7 @@ import time
 from sklearn.externals import joblib
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
-from sklearn import cross_validation
+
 path = "/home/souradeep/Downloads/aclImdb"
 
 def grab_data(path,y):
