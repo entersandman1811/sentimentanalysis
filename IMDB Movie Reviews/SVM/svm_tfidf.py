@@ -1,7 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import glob
-from sklearn import svm
+from sklearn import svm, grid_search
 import time
 from sklearn.externals import joblib
 from sklearn.metrics import classification_report
@@ -40,7 +40,7 @@ def main():
     vectorizer = TfidfVectorizer(analyzer = "word",
                              tokenizer = None,
                              preprocessor = None,
-                             stop_words = None,
+                             stop_words = 'english',
                              max_features = 5000)
 
     if train == True:
@@ -50,19 +50,21 @@ def main():
         print "Retrieving training data..."
         sentences = grab_data(os.path.join(path, 'train'), y_train)
 
-
         train_data_features = vectorizer.fit_transform(sentences)
         train_data_features = train_data_features.toarray()
-        count = 0
-        with open("tfidf_word_vectors.txt", "w+1") as the_file:
-            for item in train_data_features:
-                the_file.write("\n")
-                for value in item:
-                    the_file.write("%d " % value)
-                count += 1
-                if count == 100:
-                    break
-        clf_tfidf = svm.SVC(kernel='linear')
+        # count = 0
+        # with open("tfidf_word_vectors.txt", "w+") as the_file:
+        #     for item in train_data_features:
+        #         the_file.write("\n")
+        #         for value in item:
+        #             the_file.write("%d " % value)
+        #         count += 1
+        #         if count == 100:
+        #             break
+
+        svr = svm.SVC(kernel='linear',verbose=1)
+        parameters = {'kernel': ['linear'], 'C': [1, 10]}
+        clf_tfidf = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
 
         print "Strating training..."
 
@@ -83,7 +85,6 @@ def main():
     test_data = grab_data(os.path.join(path, 'test'), y_test)
     test_data_features = vectorizer.fit_transform(test_data)
     test_data_features = test_data_features.toarray()
-
     print "Predicting sentiments..."
 
     y_hat = clf_tfidf.predict(test_data_features)
