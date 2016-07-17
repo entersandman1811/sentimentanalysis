@@ -55,10 +55,7 @@ def main():
     if response == 'no' or response == 'n':   train =False
 
     vectorizer = TfidfVectorizer(analyzer = "word",
-                             tokenizer = None,
-                             preprocessor = None,
-                             stop_words = 'english',
-                             max_features = 5000)
+                                 max_features = 5000)
 
     if train == True:
 
