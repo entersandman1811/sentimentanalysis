@@ -67,21 +67,21 @@ def main():
         #             break
         svr = LinearSVC()
         parameters = { 'C': np.logspace(-2, 10, 13)}
-        clf_bow = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
+        clf_tfidf = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
         print "Strating training..."
 
-        clf_bow.fit(train_data_features, y_train)
+        clf_tfidf.fit(train_data_features, y_train)
         print("The best parameters are %s with a score of %0.2f"
-              % (clf_bow.best_params_, clf_bow.best_score_))
+              % (clf_tfidf.best_params_, clf_tfidf.best_score_))
         print("Time to train the model: %s seconds " % (time.time() - start_time))
 
-        _ = joblib.dump(clf_bow, "clf_bow.pkl", compress=9)
+        _ = joblib.dump(clf_tfidf, "clf_tfidf.pkl", compress=9)
 
 
     start_time = time.time()
     #y_test = []
 
-    clf_bow = joblib.load("clf_bow.pkl")
+    clf_tfidf = joblib.load("clf_tfidf.pkl")
 
     print "Retrieving test data..."
 
@@ -91,7 +91,7 @@ def main():
 
     print "Predicting sentiments..."
 
-    y_hat = clf_bow.predict(test_data_features)
+    y_hat = clf_tfidf.predict(test_data_features)
     target_names = ['positive', 'negative']
 
     print(classification_report(y_test, y_hat, target_names=target_names))

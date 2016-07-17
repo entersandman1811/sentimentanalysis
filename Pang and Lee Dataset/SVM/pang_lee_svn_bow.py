@@ -1,7 +1,7 @@
-from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 import os
 import glob
-from sklearn import svm , grid_search
+from sklearn import grid_search
 import time
 from sklearn.externals import joblib
 from sklearn.metrics import classification_report
@@ -41,7 +41,7 @@ def main():
 
     if response == 'no' or response == 'n':   train =False
 
-    vectorizer = CountVectorizer(analyzer = "word")
+    vectorizer = CountVectorizer(analyzer = "word",max_features=5000)
 
     if train == True:
 
@@ -67,7 +67,7 @@ def main():
         svr = LinearSVC()
         parameters = { 'C': np.logspace(-2, 10, 13)}
         clf_bow = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
-        print "Strating training..."
+        print "Starting training..."
 
         clf_bow.fit(train_data_features, y_train)
         print("The best parameters are %s with a score of %0.2f"
