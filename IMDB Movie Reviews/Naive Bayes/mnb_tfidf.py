@@ -1,13 +1,16 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 import glob
-from sklearn.naive_bayes import MultinomialNB
+from sklearn import grid_search
 import time
 from sklearn.externals import joblib
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
+import numpy as np
+from sklearn.naive_bayes import MultinomialNB
+from sklearn import cross_validation
 
-path = "/home/souradeep/Downloads/aclImdb"
+path = "/home/souradeep/Downloads/aclImdb_80_20"
 
 def grab_data(path,y):
     sentences = []
@@ -15,17 +18,30 @@ def grab_data(path,y):
 
     currdir = os.getcwd()
     os.chdir('%s/pos/' % path)
-    for ff in glob.glob("*.txt"):
+    types = ("*.txt","*.txt~")
+    files_grabbed = []
+    for files in types:
+        files_grabbed.extend(glob.glob(files))
+    for ff in files_grabbed:
         with open(ff, 'r') as f:
-            sentences.append(f.readline().strip())
+            sentences.append(f.read().strip())
             y.append(1)
     os.chdir('%s/neg/' % path)
-    for ff in glob.glob("*.txt"):
+    files_grabbed = []
+    for files in types:
+        files_grabbed.extend(glob.glob(files))
+    for ff in files_grabbed:
         with open(ff, 'r') as f:
-            sentences.append(f.readline().strip())
+            sentences.append(f.read().strip())
             y.append(0)
     os.chdir(currdir)
-
+    count = 0
+    # with open("sentences.txt", "w+1") as the_file:
+    #     for item in sentences:
+    #         the_file.write("%s\n" % item)
+    #         count += 1
+    #         if count == 100:
+    #             break
     return sentences
 
 def main():
@@ -39,43 +55,51 @@ def main():
     if response == 'no' or response == 'n':   train =False
 
     vectorizer = TfidfVectorizer(analyzer = "word",
-                             tokenizer = None,
-                             preprocessor = None,
-                             stop_words = None,
-                             max_features = 5000)
+                                 max_features = 5000)
 
     if train == True:
 
         start_time = time.time()
-        y_train = []
+        y = []
         print "Retrieving training data..."
-        sentences = grab_data(os.path.join(path, 'train'), y_train)
+        sentences = grab_data(path, y)
 
-
-        train_data_features = vectorizer.fit_transform(sentences)
-        train_data_features = train_data_features.toarray()
-
-        clf_tfidf = MultinomialNB()
-
-        print "Strating training..."
+        all_data_features = vectorizer.fit_transform(sentences)
+        all_data_features = all_data_features.toarray()
+        train_data_features, test_data_features, y_train, y_test = cross_validation.train_test_split(
+            all_data_features, y, test_size=0.2, random_state=1)
+        # count =0
+        # with open("bow_word_vectors.txt","w+1") as the_file:
+        #     for item in train_data_features:
+        #         the_file.write("\n" )
+        #         for value in item:
+        #             the_file.write("%d " %value)
+        #         count +=1
+        #         if count == 100:
+        #             break
+        svr = MultinomialNB()
+        parameters = { 'C': np.logspace(-2, 10, 13)}
+        clf_tfidf = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
+        print "Starting training..."
 
         clf_tfidf.fit(train_data_features, y_train)
-
+        print("The best parameters are %s with a score of %0.2f"
+              % (clf_tfidf.best_params_, clf_tfidf.best_score_))
         print("Time to train the model: %s seconds " % (time.time() - start_time))
 
         _ = joblib.dump(clf_tfidf, "clf_tfidf.pkl", compress=9)
 
 
     start_time = time.time()
-    y_test = []
+    #y_test = []
 
     clf_tfidf = joblib.load("clf_tfidf.pkl")
 
     print "Retrieving test data..."
 
-    test_data = grab_data(os.path.join(path, 'test'), y_test)
-    test_data_features = vectorizer.fit_transform(test_data)
-    test_data_features = test_data_features.toarray()
+    # test_data = grab_data(os.path.join(path, 'test'), y_test)
+    # test_data_features = vectorizer.fit_transform(test_data)
+    # test_data_features = test_data_features.toarray()
 
     print "Predicting sentiments..."
 
@@ -86,9 +110,8 @@ def main():
 
     print("Time to predict sentiments: %s secs " % ((time.time() - start_time)))
 
-
-    acc = accuracy_score(y_test, y_hat)
-    print ("The accuracy is %s " % acc)
+    acc = accuracy_score(y_test,y_hat)
+    print ("The accuracy is %s " %acc)
 
 if __name__=="__main__":
     main()
