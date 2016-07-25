@@ -217,7 +217,7 @@ def sgd(lr, tparams, grads, x, mask, y, cost):
         done like that for adadelta and rmsprop.
 
     """
-    # New set of shared variable that will contain the gradient
+    # New set of shared variable that will contain the grakf_train_sorteddient
     # for a mini-batch.
     gshared = [theano.shared(p.get_value() * 0., name='%s_grad' % k)
                for k, p in tparams.items()]
