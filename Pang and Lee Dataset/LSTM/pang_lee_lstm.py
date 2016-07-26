@@ -15,9 +15,9 @@ from theano import config
 import theano.tensor as tensor
 from theano.sandbox.rng_mrg import MRG_RandomStreams as RandomStreams
 
-import imdb
+import pang_lee
 
-datasets = {'imdb': (imdb.load_data, imdb.prepare_data)}
+datasets = {'pang_lee': (pang_lee.load_data, pang_lee.prepare_data)}
 
 # Set the random number generators' seeds for consistency
 SEED = 123
@@ -461,14 +461,14 @@ def train_lstm(
     maxlen=100,  # Sequence longer then this get ignored
     batch_size=16,  # The batch size during training.
     valid_batch_size=64,  # The batch size used for validation/test set.
-    dataset='imdb',
+    dataset='pang_lee',
 
     # Parameter for extra option
     noise_std=0.,
     use_dropout=True,  # if False slightly faster, but worst test error
                        # This frequently need a bigger model.
     reload_model=None,  # Path to a saved model we want to start from.
-    test_size=-1,  # If >0, we keep only this number of test example.
+    test_size=400,  # If >0, we keep only this number of test example.
 ):
 
     # Model options

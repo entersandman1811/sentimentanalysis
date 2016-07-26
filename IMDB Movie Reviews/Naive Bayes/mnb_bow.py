@@ -9,6 +9,18 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import cross_validation
+from sklearn.metrics import roc_curve, auc, confusion_matrix
+import matplotlib.pyplot as plt
+
+path = "/home/souradeep/txt_sentoken"
+
+def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
 
 path = "/home/souradeep/Downloads/aclImdb_80_20"
 
@@ -78,7 +90,7 @@ def main():
         #         if count == 100:
         #             break
         svr = MultinomialNB()
-        parameters = { 'C': np.logspace(-2, 10, 13)}
+        parameters = { 'alpha': np.logspace(-2, 10, 13)}
         clf_bow = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
         print "Starting training..."
 
@@ -112,6 +124,31 @@ def main():
 
     acc = accuracy_score(y_test,y_hat)
     print ("The accuracy is %s " %acc)
+
+    fpr, tpr, _ = roc_curve(y_test, y_hat)
+    roc_auc = auc(fpr, tpr)
+
+    ##############################################################################
+    # Plot of a ROC curve for a specific class
+    plt.figure()
+    plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic')
+    plt.legend(loc="lower right")
+    plt.show()
+
+    cm = confusion_matrix(y_test, y_hat)
+    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    print('Normalized confusion matrix')
+    print(cm_normalized)
+    np.set_printoptions(precision=2)
+    plt.figure()
+    plot_confusion_matrix(cm_normalized)
+    plt.show()
 
 if __name__=="__main__":
     main()

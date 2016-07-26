@@ -78,7 +78,7 @@ def main():
         #         if count == 100:
         #             break
         svr = MultinomialNB()
-        parameters = { 'C': np.logspace(-2, 10, 13)}
+        parameters = { 'alpha': np.logspace(-2, 10, 13)}
         clf_tfidf = grid_search.GridSearchCV(svr, parameters,n_jobs=-1)
         print "Starting training..."
 

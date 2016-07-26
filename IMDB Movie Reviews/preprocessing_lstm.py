@@ -43,11 +43,11 @@ def build_dict(path):
     os.chdir('%s/pos/' % path)
     for ff in glob.glob("*.txt"):
         with open(ff, 'r') as f:
-            sentences.append(f.readline().strip())
+            sentences.append(f.read().strip())
     os.chdir('%s/neg/' % path)
     for ff in glob.glob("*.txt"):
         with open(ff, 'r') as f:
-            sentences.append(f.readline().strip())
+            sentences.append(f.read().strip())
     os.chdir(currdir)
 
     sentences = tokenize(sentences)
