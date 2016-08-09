@@ -9,7 +9,7 @@ https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/tokenizer
 3) Then run this script.
 """
 
-dataset_path='/home/souradeep/txt_sentoken_lstm/'
+dataset_path='/home/souradeep/txt_sentoken_lstm_80_20/'
 
 import numpy
 import cPickle as pkl

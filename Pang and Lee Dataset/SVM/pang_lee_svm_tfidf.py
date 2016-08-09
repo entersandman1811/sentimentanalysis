@@ -103,18 +103,19 @@ def main():
 
     print "Predicting sentiments..."
 
-    y_hat = clf_tfidf.predict(test_data_features)
-    target_names = ['positive', 'negative']
-
-    print(classification_report(y_test, y_hat, target_names=target_names))
+    y_hat = clf_tfidf.decision_function(test_data_features)
+    # target_names = ['positive', 'negative']
+    #
+    # print(classification_report(y_test, y_hat, target_names=target_names))
 
     print("Time to predict sentiments: %s secs " % ((time.time() - start_time)))
 
-    acc = accuracy_score(y_test,y_hat)
-    print ("The accuracy is %s " %acc)
+    # acc = accuracy_score(y_test,y_hat)
+    # print ("The accuracy is %s " %acc)
 
     fpr, tpr, _ = roc_curve(y_test, y_hat)
     roc_auc = auc(fpr, tpr)
+    #print "fpr = ", fpr , "tpr = " ,tpr , "roc_auc= " ,roc_auc
 
     ##############################################################################
     # Plot of a ROC curve for a specific class
@@ -129,13 +130,13 @@ def main():
     plt.legend(loc="lower right")
     plt.show()
 
-    cm = confusion_matrix(y_test, y_hat)
-    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    print('Normalized confusion matrix')
-    print(cm_normalized)
-    np.set_printoptions(precision=2)
-    plt.figure()
-    plot_confusion_matrix(cm_normalized)
-    plt.show()
+    # cm = confusion_matrix(y_test, y_hat)
+    # cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    # print('Normalized confusion matrix')
+    # print(cm_normalized)
+    # np.set_printoptions(precision=2)
+    # plt.figure()
+    # plot_confusion_matrix(cm_normalized)
+    # plt.show()
 if __name__=="__main__":
     main()

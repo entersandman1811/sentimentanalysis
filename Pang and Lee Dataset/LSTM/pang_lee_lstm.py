@@ -453,7 +453,7 @@ def train_lstm(
     decay_c=0.,  # Weight decay for the classifier applied to the U weights.
     lrate=0.0001,  # Learning rate for sgd (not used for adadelta and rmsprop)
     n_words=10000,  # Vocabulary size
-    optimizer=adadelta,  # sgd, adadelta and rmsprop available, sgd very hard to use, not recommanded (probably need momentum and decaying learning rate).
+    optimizer=rmsprop,  # sgd, adadelta and rmsprop available, sgd very hard to use, not recommanded (probably need momentum and decaying learning rate).
     encoder='lstm',  # TODO: can be removed must be lstm.
     saveto='lstm_model.npz',  # The best model will be saved there
     validFreq=370,  # Compute the validation error after this number of update.
@@ -605,8 +605,8 @@ def train_lstm(
                         best_p = unzip(tparams)
                         bad_counter = 0
 
-                    print( ('Train ', train_err, 'Valid ', valid_err,
-                           'Test ', test_err) )
+                    print(('Train ', train_err, 'Test ', valid_err,
+                            ))
 
                     if (len(history_errs) > patience and
                         valid_err >= numpy.array(history_errs)[:-patience,
@@ -637,14 +637,14 @@ def train_lstm(
     valid_err = pred_error(f_pred, prepare_data, valid, kf_valid)
     test_err = pred_error(f_pred, prepare_data, test, kf_test)
 
-    print( 'Train ', train_err, 'Valid ', valid_err, 'Test ', test_err )
+    print( 'Train ', train_err, 'Test ', valid_err)
     if saveto:
         numpy.savez(saveto, train_err=train_err,
                     valid_err=valid_err, test_err=test_err,
                     history_errs=history_errs, **best_p)
     print('The code run for %d epochs, with %f sec/epochs' % (
         (eidx + 1), (end_time - start_time) / (1. * (eidx + 1))))
-    print( ('Training took %.1fs' %
+    print(('Training took %.1fs' %
             (end_time - start_time)), file=sys.stderr)
     return train_err, valid_err, test_err
 
@@ -653,5 +653,5 @@ if __name__ == '__main__':
     # See function train for all possible parameter and there definition.
     train_lstm(
         max_epochs=100,
-        test_size=500,
+        test_size=400,
     )

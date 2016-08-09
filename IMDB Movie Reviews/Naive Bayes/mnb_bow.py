@@ -12,7 +12,6 @@ from sklearn import cross_validation
 from sklearn.metrics import roc_curve, auc, confusion_matrix
 import matplotlib.pyplot as plt
 
-path = "/home/souradeep/txt_sentoken"
 
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -22,7 +21,7 @@ def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
 
-path = "/home/souradeep/Downloads/aclImdb_80_20"
+path = "/home/souradeep/Downloads/aclImdb_full"
 
 def grab_data(path,y):
     sentences = []
