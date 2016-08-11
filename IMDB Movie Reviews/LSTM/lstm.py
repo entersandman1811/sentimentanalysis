@@ -321,14 +321,7 @@ def rmsprop(lr, tparams, grads, x, mask, y, cost):
     cost: Theano variable
         Objective fucntion to minimize
 
-    Notes
-    -----
-    For more information, see [Hint2014]_.
-
-    .. [Hint2014] Geoff Hinton, *Neural Networks for Machine Learning*,
-       lecture 6a,
-       http://cs.toronto.edu/~tijmen/csc321/slides/lecture_slides_lec6.pdf
-    """
+   """
 
     zipped_grads = [theano.shared(p.get_value() * numpy_floatX(0.),
                                   name='%s_grad' % k)
@@ -404,9 +397,7 @@ def build_model(tparams, options):
 
 
 def pred_probs(f_pred_prob, prepare_data, data, iterator, verbose=False):
-    """ If you want to use a trained model, this is useful to compute
-    the probabilities of new examples.
-    """
+
     n_samples = len(data[0])
     probs = numpy.zeros((n_samples, 2)).astype(config.floatX)
 
@@ -427,11 +418,7 @@ def pred_probs(f_pred_prob, prepare_data, data, iterator, verbose=False):
 
 
 def pred_error(f_pred, prepare_data, data, iterator, verbose=False):
-    """
-    Just compute the error
-    f_pred: Theano fct computing the prediction
-    prepare_data: usual prepare_data for that dataset.
-    """
+
     valid_err = 0
     for _, valid_index in iterator:
         x, mask, y = prepare_data([data[0][t] for t in valid_index],
@@ -453,8 +440,8 @@ def train_lstm(
     decay_c=0.,  # Weight decay for the classifier applied to the U weights.
     lrate=0.0001,  # Learning rate for sgd (not used for adadelta and rmsprop)
     n_words=10000,  # Vocabulary size
-    optimizer=rmsprop,  # sgd, adadelta and rmsprop available, sgd very hard to use, not recommanded (probably need momentum and decaying learning rate).
-    encoder='lstm',  # TODO: can be removed must be lstm.
+    optimizer=rmsprop,  # sgd, adadelta and rmsprop.
+    encoder='lstm',
     saveto='lstm_model.npz',  # The best model will be saved there
     validFreq=370,  # Compute the validation error after this number of update.
     saveFreq=1110,  # Save the parameters after every saveFreq updates
@@ -563,8 +550,7 @@ def train_lstm(
                 x = [train[0][t]for t in train_index]
 
                 # Get the data in numpy.ndarray format
-                # This swap the axis!
-                # Return something of shape (minibatch maxlen, n samples)
+
                 x, mask, y = prepare_data(x, y)
                 n_samples += x.shape[1]
 
@@ -650,7 +636,6 @@ def train_lstm(
 
 
 if __name__ == '__main__':
-    # See function train for all possible parameter and there definition.
     train_lstm(
         max_epochs=100,
         test_size=500,
