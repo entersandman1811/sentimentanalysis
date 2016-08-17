@@ -111,40 +111,41 @@ def main():
 
     print "Predicting sentiments..."
 
-    y_hat = clf_bow.decision_function(test_data_features)
-    # target_names = ['positive', 'negative']
-    #
-    # print(classification_report(y_test, y_hat, target_names=target_names))
-    #
-    print("Time to predict sentiments: %s secs " % ((time.time() - start_time)))
-    #
-    # acc = accuracy_score(y_test,y_hat)
-    # print ("The accuracy is %s " %acc)
+    # y_hat = clf_bow.decision_function(test_data_features)# for ROC
+    y_hat = clf_bow.predict(test_data_features)
+    target_names = ['positive', 'negative']
 
-    fpr, tpr, _ = roc_curve(y_test, y_hat)
-    roc_auc = auc(fpr, tpr)
+    print(classification_report(y_test, y_hat, target_names=target_names))
+
+    print("Time to predict sentiments: %s secs " % ((time.time() - start_time)))
+
+    acc = accuracy_score(y_test,y_hat)
+    print ("The accuracy is %s " %acc)
+
+    # fpr, tpr, _ = roc_curve(y_test, y_hat)
+    # roc_auc = auc(fpr, tpr)
 
     ##############################################################################
     # Plot of a ROC curve for a specific class
 
-    plt.figure()
-    plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic')
-    plt.legend(loc="lower right")
-    plt.show()
-
-    # cm = confusion_matrix(y_test, y_hat)
-    # cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-    # print('Normalized confusion matrix')
-    # print(cm_normalized)
-    # np.set_printoptions(precision=2)
     # plt.figure()
-    # plot_confusion_matrix(cm_normalized)
+    # plt.plot(fpr, tpr, label='ROC curve (area = %0.2f)' % roc_auc)
+    # plt.plot([0, 1], [0, 1], 'k--')
+    # plt.xlim([0.0, 1.0])
+    # plt.ylim([0.0, 1.05])
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+    # plt.title('Receiver operating characteristic')
+    # plt.legend(loc="lower right")
     # plt.show()
+
+    cm = confusion_matrix(y_test, y_hat)
+    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    print('Normalized confusion matrix')
+    print(cm_normalized)
+    np.set_printoptions(precision=2)
+    plt.figure()
+    plot_confusion_matrix(cm_normalized)
+    plt.show()
 if __name__=="__main__":
     main()
