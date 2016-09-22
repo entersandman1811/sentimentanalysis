@@ -1,2 +1,2 @@
-# Sentiment Analysis
-McGill University MEng Project
+# Sentiment Analysis using Deep Learning
+McGill University 
